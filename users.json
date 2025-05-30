@@ -1,0 +1,58 @@
+{
+  "xyz": {
+    "password": "scrypt:32768:8:1$yHl6guQsk9LDN1Ts$a920dbbff5d6b06fb7e75dee44f6ce98ccf63a70d23128eadf73b909f3e641bfcbbd9078bed563861f690ed6f6839a070e84aac97fe35ee455eadf8fa2362eeb",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 20,
+    "created_at": "2025-05-01T20:54:40.482130"
+  },
+  "sania": {
+    "password": "scrypt:32768:8:1$32UdV6SGugoIetlr$acd07d53e60f67d1b72b48fd38797c34277fa8803221f6f61b7c982def0956dec9c56c0d89573d7e2c70f144064be9a17db5d878a395f253d5362141553dba99",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 20,
+    "created_at": "2025-05-01T21:08:45.299702"
+  },
+  "zarqa": {
+    "password": "scrypt:32768:8:1$n2R44PbfRkGU1ejK$b84420c296d156802e6f6178221e6755fb03c67ad227e4c66e8940c3a6991e2ec6e4dc4d5072d93ad53d4d54461bd1e24e9e307a9d9ca9c7fb290b0f4d3d6953",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 20,
+    "created_at": "2025-05-02T09:08:40.053027"
+  },
+  "naaz": {
+    "password": "scrypt:32768:8:1$Cvlxd4kdao6ZhJCq$f5c859184f43f7041f7c8615d9732c0b136b7aafb8e085c16e2efb024441f5ce3917478706ea944f6a893debd2b02bd0e470a78c1d273e4953254c3f1f3c0fa5",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 20,
+    "created_at": "2025-05-02T15:20:27.072309"
+  },
+  "Sania Bushra": {
+    "password": "scrypt:32768:8:1$baqXNjkVfNeZxcu2$0eba68c5630bec827d99dd5eb30c338678894fae45273b8ea99c6428d32c0bf4f8e96ee77430c05d836ab42be949bc6fdc1b88bb4f4041931a623e42b50d4315",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 22,
+    "created_at": "2025-05-02T15:24:39.999221"
+  },
+  "vanshika": {
+    "password": "scrypt:32768:8:1$i0x9JYHTnryOmTgh$00c5f1721b6776ad64795217b0fedc72c301ff2a65b292b637553126ff198be95dfa1bc7d5e4ff690eb62414859aee5a59d6afe92cf51c7dd568ba7e0caa8624",
+    "food_preference": "veg",
+    "country": "india",
+    "age": 20,
+    "created_at": "2025-05-03T20:28:49.121036"
+  },
+  "mona": {
+    "password": "scrypt:32768:8:1$gaHafXSlNT3MEPS5$19fcaadd7b72a8293d1f8e2fb14f84c75352d0b1a93dae636937547e1056ed5d6d83a9b0f9520e177b95c4422426c7889972f895e1985529f53e6b0debe65432",
+    "food_preference": "non-veg",
+    "country": "india",
+    "age": 21,
+    "created_at": "2025-05-05T07:41:49.345074"
+  },
+  "xyz2": {
+    "password": "scrypt:32768:8:1$ZiKD0JSCk6P3EFlS$462c7540dffdb642f4da08f26c453eeabeb9a73339c2ca55580129cec82b53a7dce3a54ce189effc5d72ad026cdfdb3a3e01f985044dac739c96bda973a4f5e9",
+    "food_preference": "veg",
+    "country": "india",
+    "age": 34,
+    "created_at": "2025-05-12T20:51:04.757043"
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="1f47d.svg" />
+    <title>Register - Meal Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center p-6">
+    <h2 class="text-3xl font-semibold text-gray-800 mb-6">Register</h2>
+    <form id="registerForm" class="w-full max-w-md bg-white p-6 rounded-lg shadow-md flex flex-col">
+        <label for="username" class="block text-gray-700 font-medium mb-2">Username:</label>
+        <input type="text" id="username" required class="mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="password" class="block text-gray-700 font-medium mb-2">Password:</label>
+        <input type="password" id="password" required class="mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="foodPreference" class="block text-gray-700 font-medium mb-2">Food Preference:</label>
+        <select id="foodPreference" required class="mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">--Select--</option>
+            <option value="veg">Veg</option>
+            <option value="non-veg">Non-Veg</option>
+        </select>
+        <label for="country" class="block text-gray-700 font-medium mb-2">Country:</label>
+        <input type="text" id="country" required class="mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <label for="age" class="block text-gray-700 font-medium mb-2">Age:</label>
+        <input type="number" id="age" min="1" max="120" required class="mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">Register</button>
+        <p id="registerError" class="text-red-600 mt-4 text-center min-h-[24px]"></p>
+    </form>
+    <div class="link mt-6 text-center">
+        Already have an account? <a href="index.html" class="text-blue-600 hover:underline">Login here</a>
+    </div>
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const registerError = document.getElementById('registerError');
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            registerError.textContent = '';
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const foodPreference = document.getElementById('foodPreference').value;
+            const country = document.getElementById('country').value.trim();
+            const age = parseInt(document.getElementById('age').value, 10);
+            if (!username || !password || !foodPreference || !country || !age) {
+                registerError.textContent = 'Please fill in all fields.';
+                return;
+            }
+            try {
+                const response = await fetch('http://localhost:5000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, food_preference: foodPreference, country, age })
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    alert('Registration successful! Please login.');
+                    window.location.href = 'index.html';
+                } else {
+                    registerError.textContent = data.message || 'Registration failed';
+                }
+            } catch (err) {
+                registerError.textContent = 'Error connecting to server';
+            }
+        });
+    </script>
+</body>
+</html>

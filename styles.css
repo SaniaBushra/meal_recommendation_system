@@ -1,0 +1,151 @@
+/* Common styles for frontend pages */
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    color: #333;
+}
+
+h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #34495e;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.recommendation-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+#recommendationName {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #34495e;
+}
+
+.thumbs {
+    font-size: 48px;
+    cursor: pointer;
+    margin: 0 25px;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+
+.thumbs:hover {
+    color: #27ae60;
+}
+
+.thumbs.down:hover {
+    color: #c0392b;
+}
+
+#message {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #27ae60;
+    min-height: 24px;
+    transition: opacity 0.5s ease;
+}
+
+button {
+    padding: 12px 30px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    background-color: #1c5980;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+button:focus, input:focus, select:focus {
+    outline: 2px solid #2980b9;
+    outline-offset: 2px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+}
+
+input, select {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    body {
+        max-width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+
+    .thumbs {
+        font-size: 36px;
+        margin: 0 15px;
+    }
+}

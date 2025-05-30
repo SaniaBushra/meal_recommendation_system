@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="1f47d.svg" />
+    <title>User Profile - Meal Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center p-6">
+<h2 id="welcomeMsg" class="text-3xl font-semibold text-gray-800 mb-6 opacity-0 transition-opacity duration-1000 ease-in-out">Welcome, <span id="username"></span></h2>
+
+    <div class="mb-6 w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <label for="foodPreference" class="block text-gray-700 font-medium mb-2">Food Preference:</label>
+        <select id="foodPreference" class="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="veg">Veg</option>
+            <option value="non-veg">Non-Veg</option>
+        </select>
+        <button id="savePreferenceBtn" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">Save Preference</button>
+    </div>
+
+    <div class="recommendation-section w-full max-w-md bg-white p-6 rounded-lg shadow-md mb-6">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Recommended Meal for You</h3>
+        <div id="recommendationName" class="text-lg font-semibold text-gray-800 mb-4">Loading...</div>
+        <div class="flex justify-center space-x-12 text-4xl cursor-pointer select-none">
+            <span id="likeBtn" class="text-green-600 hover:text-green-700 transition-colors">&#128077;</span>
+            <span id="dislikeBtn" class="text-red-600 hover:text-red-700 transition-colors">&#128078;</span>
+        </div>
+        <div id="message" class="mt-4 font-semibold text-green-600 min-h-[24px] transition-opacity"></div>
+    </div>
+
+<button id="logoutBtn" class="w-full max-w-md bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">Logout</button>
+
+    <script>
+        const usernameSpan = document.getElementById('username');
+        const foodPreferenceSelect = document.getElementById('foodPreference');
+        const savePreferenceBtn = document.getElementById('savePreferenceBtn');
+        const recommendationName = document.getElementById('recommendationName');
+        const likeBtn = document.getElementById('likeBtn');
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        const message = document.getElementById('message');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const welcomeMsg = document.getElementById('welcomeMsg');
+
+        let currentMeal = null;
+        let username = sessionStorage.getItem('username');
+
+        if (!username) {
+            window.location.href = 'index.html';
+        }
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch('http://localhost:5000/profile', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    const profile = data.profile;
+                    usernameSpan.textContent = profile.username;
+                    foodPreferenceSelect.value = profile.food_preference.toLowerCase();
+
+                    if (profile.recommendation) {
+                        currentMeal = profile.recommendation;
+                        recommendationName.textContent = currentMeal.name + " (from " + currentMeal.restaurant_name + ")";
+                    } else {
+                        recommendationName.textContent = 'No recommendation available.';
+                    }
+                    welcomeMsg.classList.remove('opacity-0');
+                    welcomeMsg.classList.add('opacity-100');
+                    document.querySelector('h2').textContent = `Welcome, ${profile.username}`;
+                } else {
+                    recommendationName.textContent = 'Failed to load profile.';
+                }
+            } catch (err) {
+                recommendationName.textContent = 'Error connecting to server.';
+            }
+        }
+
+        async function sendFeedback(liked) {
+            if (!currentMeal) return;
+            try {
+                const username = sessionStorage.getItem('username');
+                if (!username) {
+                    message.textContent = 'User not logged in.';
+                    return;
+                }
+            const response = await fetch('http://localhost:5000/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ username: username, meal_id: currentMeal.id, liked: liked })
+            });
+                const data = await response.json();
+                if (response.ok) {
+                    message.textContent = liked ? 'You liked this meal.' : 'You disliked this meal.';
+                } else {
+                    message.textContent = 'Error sending feedback.';
+                }
+            } catch (err) {
+                message.textContent = 'Error sending feedback.';
+            }
+        }
+
+        async function saveFoodPreference() {
+            const selectedPreference = foodPreferenceSelect.value;
+            try {
+                const response = await fetch('http://localhost:5000/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ food_preference: selectedPreference })
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    message.textContent = 'Food preference updated successfully.';
+                    fetchProfile(); // Refresh profile data
+                } else {
+                    message.textContent = 'Failed to update food preference.';
+                }
+            } catch (err) {
+                message.textContent = 'Error updating food preference.';
+            }
+        }
+
+        likeBtn.addEventListener('click', () => sendFeedback(true));
+        dislikeBtn.addEventListener('click', () => sendFeedback(false));
+        savePreferenceBtn.addEventListener('click', saveFoodPreference);
+        logoutBtn.addEventListener('click', async () => {
+            try {
+        const response = await fetch('http://localhost:5000/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    sessionStorage.removeItem('username');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Logout failed');
+                }
+            } catch (err) {
+                alert('Error connecting to server');
+            }
+        });
+
+        fetchProfile();
+    </script>
+</body>
+</html>

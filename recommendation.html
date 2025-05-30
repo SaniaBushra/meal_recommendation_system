@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="1f47d.svg" />
+    <title>Meal Recommendation System - Recommendation</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; text-align: center; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; cursor: pointer; }
+        .thumbs {
+            font-size: 48px;
+            cursor: pointer;
+            margin: 0 20px;
+            user-select: none;
+        }
+        .thumbs:hover {
+            color: green;
+        }
+        .thumbs.down:hover {
+            color: red;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+        #skipBtn {
+            font-size: 16px;
+            margin-left: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            background-color: #f0ad4e;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        #skipBtn:hover {
+            background-color: #ec971f;
+        }
+    </style>
+</head>
+<body>
+    <h2>Recommended Meal</h2>
+    <div id="recommendationName">Loading...</div>
+    <div>
+        <span id="likeBtn" class="thumbs">&#128077;</span>
+        <span id="dislikeBtn" class="thumbs down">&#128078;</span>
+        <button id="skipBtn" class="thumbs" style="font-size: 16px; padding: 8px 16px; cursor: pointer; margin-left: 10px;">Skip</button>
+    </div>
+    <div id="message"></div>
+    <div>
+        <button id="anotherBtn">Get Another Recommendation</button>
+        <button id="homeBtn">logout</button>
+    </div>
+
+    <script>
+        const recommendationName = document.getElementById('recommendationName');
+        const likeBtn = document.getElementById('likeBtn');
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        const message = document.getElementById('message');
+        const anotherBtn = document.getElementById('anotherBtn');
+        const homeBtn = document.getElementById('homeBtn');
+
+        let currentMeal = null;
+
+        async function fetchRecommendation() {
+            recommendationName.textContent = 'Loading...';
+            message.textContent = '';
+            try {
+                const username = sessionStorage.getItem('username');
+                if (!username) {
+                    alert('User not logged in. Redirecting to login page.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                // Fetch user profile to get food preference and meal time
+                const profileResponse = await fetch('http://192.168.62.150:5000/profile', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (!profileResponse.ok) {
+                    recommendationName.textContent = 'Error fetching user profile.';
+                    return;
+                }
+                const profileData = await profileResponse.json();
+                if (!profileData.success) {
+                    recommendationName.textContent = 'Error fetching user profile.';
+                    return;
+                }
+                const foodType = profileData.profile.food_preference.toLowerCase();
+                const mealType = profileData.profile.recommendation ? profileData.profile.recommendation.meal : null;
+                // If mealType is not available from profile recommendation, fallback to time-based logic
+                let mealTypeToUse = mealType;
+                if (!mealTypeToUse) {
+                    const now = new Date();
+                    const hour = now.getUTCHours();
+                    if (hour >= 5 && hour < 11) {
+                        mealTypeToUse = 'breakfast';
+                    } else if (hour >= 11 && hour < 16) {
+                        mealTypeToUse = 'lunch';
+                    } else if (hour >= 16 && hour < 19) {
+                        mealTypeToUse = 'snack';
+                    } else if (hour >= 19 && hour < 23) {
+                        mealTypeToUse = 'dinner';
+                    } else {
+                        mealTypeToUse = 'snack';
+                    }
+                }
+                const response = await fetch('http://192.168.62.150:5000/recommendation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, food_type: foodType, meal_type: mealTypeToUse })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    currentMeal = data.recommendation;
+                    recommendationName.textContent = currentMeal.name;
+                } else {
+                    recommendationName.textContent = data.error || 'No recommendation found.';
+                }
+            } catch (err) {
+                recommendationName.textContent = 'Error fetching recommendation.';
+            }
+        }
+
+        async function sendFeedback(liked) {
+            if (!currentMeal) return;
+        try {
+            const username = sessionStorage.getItem('username');
+            if (!username) {
+                message.textContent = 'User not logged in.';
+                return;
+            }
+                const response = await fetch('http://192.168.62.150:5000/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, meal_id: currentMeal.id, liked: liked })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                message.textContent = liked ? 'You liked this meal.' : 'You disliked this meal.';
+            } else {
+                message.textContent = 'Error sending feedback.';
+            }
+        } catch (err) {
+            message.textContent = 'Error sending feedback.';
+        }
+        }
+
+        likeBtn.addEventListener('click', () => sendFeedback(true));
+        dislikeBtn.addEventListener('click', () => sendFeedback(false));
+        anotherBtn.addEventListener('click', fetchRecommendation);
+        homeBtn.addEventListener('click', () => window.location.href = 'index.html');
+        const skipBtn = document.getElementById('skipBtn');
+        skipBtn.addEventListener('click', fetchRecommendation);
+
+        // Fetch recommendation on page load
+        fetchRecommendation();
+    </script>
+</body>
+</html>
